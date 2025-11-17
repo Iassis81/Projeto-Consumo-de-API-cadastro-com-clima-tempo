@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto Consumo API</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>Cadastro</h1>
+    <form id="formulario">
+        <label>Nome Completo:</label>
+        <input id="nome" type="text" placeholder="Digite seu nome">
+        <label>E-mail:</label>
+        <input id="email" type="email" placeholder="Digite seu e-mail">
+        <label>Telefone:</label>
+        <input id="telefone" type="tel" placeholder="Digite seu telefone">
+        <label for="cep">CEP:</label>
+        <input type="text" id="cep" maxlength="9" placeholder="Digite seu CEP" onblur="buscarEndereco()">
+        <label for="logradouro">Logradouro:</label>
+        <input type="text" id="logradouro" readonly>
+        <label for="bairro">Bairro:</label>
+        <input type="text" id="bairro" readonly>
+        <label for="cidade">Cidade:</label>
+        <input type="text" id="cidade" readonly>
+        <label for="uf">Estado (UF):</label>
+        <input type="text" id="uf" readonly>
+        <label for="numero">Número:</label>
+        <input type="text" id="numero" required>
+        <h1>Clima</h1>
+        <input type="text" id="cidade" placeholder="Digite a cidade">
+        <button onclick="buscarClima()">Buscar</button>
+    
+        <div id="loading" style="display: none;">Carregando...</div>
+    
+        <p id="temperatura"></p>
+        <p id="descricao"></p>
+        <p id="umidade"></p> <!-- 🆕 Umidade adicionada -->
+    
+
+        <div class="botoes"></div>
+        <button type="button" id="btnSalvar">Salvar</button>
+        <button type="button" id="btnLimpar">Limpar Local Storage</button>
+        </div>
+    </form>
+    <!-- 🔗 Arquivo JavaScript externo -->
+    <script src="script.js"></script>
+</body>
+
+</html>
