@@ -1,10 +1,11 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f7f8;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23e1e8e9" d="M50,10 C70,10 85,25 85,45 C85,65 70,80 50,80 C30,80 15,65 15,45 C15,25 30,10 50,10 Z M35,25 C30,30 25,35 25,45 C25,55 30,60 35,65 C40,70 45,70 50,70 C55,70 60,70 65,65 C70,60 75,55 75,45 C75,35 70,30 65,25 C60,20 55,20 50,20 C45,20 40,20 35,25 Z"/></svg>');
-    background-size: 200px;
-    background-position: center;
-    padding: 30px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #87CEEB;
+    background-image: linear-gradient(to bottom, #87CEEB, #98D8E8, #B0E2FF);
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><defs><linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:%2387CEEB;stop-opacity:1" /><stop offset="100%" style="stop-color:%23B0E2FF;stop-opacity:1" /></linearGradient></defs><path fill="url(%23sky)" d="M0 0h120v120H0z"/><circle cx="90" cy="30" r="15" fill="%23FFD700" opacity="0.9"/><path fill="%23FFFFFF" opacity="0.8" d="M30 40a10 10 0 0 1 20 0 10 10 0 0 1-20 0zm40-5a8 8 0 0 1 16 0 8 8 0 0 1-16 0zm-60 20a12 12 0 0 1 24 0 12 12 0 0 1-24 0z"/></svg>');
+    background-size: cover;
+    background-attachment: fixed;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -12,7 +13,6 @@ body {
     position: relative;
 }
 
-/* Adicionando um overlay para melhor legibilidade */
 body::before {
     content: '';
     position: absolute;
@@ -20,134 +20,164 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(244, 247, 248, 0.85);
+    background: linear-gradient(135deg, rgba(135, 206, 235, 0.4) 0%, rgba(176, 226, 255, 0.3) 100%);
     z-index: -1;
 }
 
 h1 {
-    color: #2e7d32;
+    color: #1a5276;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+    font-weight: 600;
 }
 
 form {
-    background: white;
-    padding: 25px 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    width: 320px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 20px 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    width: 280px;
     position: relative;
     z-index: 1;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 label {
     display: block;
-    margin-top: 12px;
-    font-weight: bold;
-    color: #333;
+    margin-top: 10px;
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.9em;
 }
 
 input {
     width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #aaa;
-    border-radius: 5px;
+    padding: 8px 10px;
+    margin-top: 4px;
+    border: 1px solid #bdc3c7;
+    border-radius: 6px;
     box-sizing: border-box;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
 }
 
 input:focus {
-    border-color: #2e7d32;
+    border-color: #3498db;
     outline: none;
-    box-shadow: 0 0 5px rgba(46, 125, 50, 0.3);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    transform: translateY(-1px);
 }
 
 .botoes {
-    margin-top: 25px;
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
 .botoes button {
-    width: 80%;
-    max-width: 200px;
-    background-color: #2e7d32;
+    width: 85%;
+    max-width: 180px;
+    background: linear-gradient(135deg, #2e7d32, #4caf50);
     color: white;
-    padding: 10px 15px;
+    padding: 8px 12px;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 0.9em;
     transition: all 0.3s ease;
 }
 
 .botoes button:hover {
-    background-color: #1b5e20;
+    background: linear-gradient(135deg, #1b5e20, #2e7d32);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Estilo específico para o botão de buscar clima */
 button[onclick="buscarClimaPorCEP()"] {
     width: 100%;
-    background-color: #1565c0;
-    margin-top: 15px;
-    padding: 10px;
+    background: linear-gradient(135deg, #2670c4, #3498db);
+    margin-top: 12px;
+    padding: 9px;
+    font-size: 0.9em;
 }
 
 button[onclick="buscarClimaPorCEP()"]:hover {
-    background-color: #0d47a1;
+    background: linear-gradient(135deg, #1a5276, #2670c4);
+    transform: translateY(-2px);
 }
 
-/* Estilo para os resultados do clima */
 #temperatura, #descricao, #umidade {
     text-align: center;
-    margin: 8px 0;
-    padding: 8px;
-    background-color: #e8f5e9;
-    border-radius: 5px;
-    font-weight: bold;
+    margin: 6px 0;
+    padding: 6px 8px;
+    background-color: rgba(199, 238, 202, 0.7);
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9em;
+    backdrop-filter: blur(5px);
 }
 
 #loading {
     text-align: center;
     font-style: italic;
-    color: #666;
+    color: #7f8c8d;
+    font-size: 0.9em;
 }
 
-/* Responsividade */
 @media (max-width: 480px) {
     body {
-        padding: 15px;
+        padding: 15px 10px;
     }
     
     form {
         width: 100%;
-        max-width: 320px;
-        padding: 20px;
+        max-width: 280px;
+        padding: 18px 20px;
+    }
+    
+    h1 {
+        font-size: 1.3em;
     }
 }
-/* Estilos para as cores de temperatura */
+
 #temperatura.temp-fria {
-    color: #2196F3; /* Azul para temperaturas frias */
+    color: #2196F3;
+    background-color: rgba(33, 150, 243, 0.15) !important;
     font-weight: bold;
 }
 
 #temperatura.temp-moderada {
-    color: #4CAF50; /* Verde para temperaturas moderadas */
+    color: #27ae60;
+    background-color: rgba(39, 174, 96, 0.15) !important;
     font-weight: bold;
 }
 
 #temperatura.temp-quente {
-    color: #F44336; /* Vermelho para temperaturas quentes */
+    color: #e74c3c;
+    background-color: rgba(231, 76, 60, 0.15) !important;
     font-weight: bold;
 }
 
 .temp-value {
-    font-size: 1.1em;
+    font-size: 1em;
     padding: 2px 6px;
     border-radius: 4px;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.8);
+    margin-left: 3px;
+}
+
+/* Adicionando ícones climáticos decorativos */
+form::before {
+    content: '⛅';
+    position: absolute;
+    top: -20px;
+    right: -10px;
+    font-size: 2em;
+    opacity: 0.1;
+    transform: rotate(15deg);
 }

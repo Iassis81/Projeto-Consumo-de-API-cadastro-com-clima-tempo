@@ -1,4 +1,4 @@
-// Função para buscar endereço pelo CEP
+
 async function buscarEndereco() {
     const cep = document.getElementById('cep').value.replace(/\D/g, '');
     
@@ -27,7 +27,7 @@ async function buscarEndereco() {
     }
 }
 
-// Função para buscar clima pela cidade (mantida para compatibilidade)
+
 async function buscarClima() {
     const cidade = document.getElementById('cidadeClima').value;
     if (!cidade) {
@@ -37,7 +37,7 @@ async function buscarClima() {
     await buscarClimaPorCidade(cidade);
 }
 
-// Nova função para buscar clima diretamente pelo CEP
+
 async function buscarClimaPorCEP() {
     const cep = document.getElementById('cep').value.replace(/\D/g, '');
     
@@ -46,11 +46,11 @@ async function buscarClimaPorCEP() {
         return;
     }
 
-    // Mostrar loading
+    
     document.getElementById('loading').style.display = 'block';
     
     try {
-        // Primeiro busca o endereço pelo CEP
+        
         const viaCepResponse = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
         const enderecoData = await viaCepResponse.json();
         
@@ -62,37 +62,35 @@ async function buscarClimaPorCEP() {
         const cidade = enderecoData.localidade;
         const uf = enderecoData.uf;
         
-        // Agora busca o clima pela cidade
+        
         await buscarClimaPorCidade(cidade, uf);
         
     } catch (error) {
         console.error('Erro ao buscar clima:', error);
         alert('Erro ao buscar informações do clima!');
     } finally {
-        // Esconder loading
+       
         document.getElementById('loading').style.display = 'none';
     }
 }
 
-// Função para definir a cor da temperatura baseada no valor
+
 function definirCorTemperatura(temperatura, elemento) {
-    // Remover classes de cor anteriores
+ 
     elemento.classList.remove('temp-fria', 'temp-moderada', 'temp-quente');
-    
-    // Aplicar a cor conforme a faixa de temperatura
+   
     if (temperatura < 15) {
-        elemento.classList.add('temp-fria'); // Azul
+        elemento.classList.add('temp-fria'); 
     } else if (temperatura >= 15 && temperatura <= 30) {
-        elemento.classList.add('temp-moderada'); // Verde
+        elemento.classList.add('temp-moderada'); 
     } else {
-        elemento.classList.add('temp-quente'); // Vermelho
-    }
+        elemento.classList.add('temp-quente');     }
 }
 
-// Função auxiliar para buscar clima por cidade
+
 async function buscarClimaPorCidade(cidade, uf = '') {
     try {
-        // Usando a API OpenWeatherMap (você precisa de uma chave API gratuita)
+      
         const apiKey = '5a5f074b4bd6d0523bdaf8c04f879ed2';
         const response = await fetch(
             `https://api.openweathermap.org/data/2.5/weather?q=${cidade},BR&units=metric&lang=pt_br&appid=${apiKey}`
@@ -106,11 +104,11 @@ async function buscarClimaPorCidade(cidade, uf = '') {
         const temperatura = Math.round(data.main.temp);
         const elementoClima = document.getElementById('temperatura');
         
-        // Atualizar a interface com os dados do clima
+       
         elementoClima.textContent = `Temperatura: ${temperatura}°C`;
         elementoClima.innerHTML = `Temperatura: <span class="temp-value">${temperatura}°C</span>`;
         
-        // Aplicar a cor conforme a temperatura
+        
         definirCorTemperatura(temperatura, elementoClima);
         
         document.getElementById('descricao').textContent = `Condição: ${data.weather[0].description}`;
@@ -122,21 +120,21 @@ async function buscarClimaPorCidade(cidade, uf = '') {
     }
 }
 
-// Função alternativa usando uma API de clima brasileira (sem necessidade de chave)
+
 async function buscarClimaPorCidadeBrasil(cidade) {
     try {
-        // API alternativa para cidades brasileiras (exemplo)
+       
         const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=-23.55&longitude=-46.63&current_weather=true`);
-        // Nota: Você precisaria geocodificar a cidade para obter latitude/longitude
+       
         
         const data = await response.json();
         const temperatura = data.current_weather.temperature;
         const elementoClima = document.getElementById('temperatura');
         
-        // Atualizar a interface
+       
         elementoClima.innerHTML = `Temperatura: <span class="temp-value">${temperatura}°C</span>`;
         
-        // Aplicar a cor conforme a temperatura
+        
         definirCorTemperatura(temperatura, elementoClima);
         
         document.getElementById('descricao').textContent = `Condição: ${data.current_weather.weathercode}`;
@@ -147,9 +145,9 @@ async function buscarClimaPorCidadeBrasil(cidade) {
     }
 }
 
-// Event Listeners
+
 document.getElementById('btnSalvar').addEventListener('click', function() {
-    // Sua lógica de salvamento aqui
+    
     alert('Dados salvos com sucesso!');
 });
 
@@ -158,7 +156,7 @@ document.getElementById('btnLimpar').addEventListener('click', function() {
     alert('Local Storage limpo!');
 });
 
-// Formatação do CEP
+
 document.getElementById('cep').addEventListener('input', function(e) {
     let value = e.target.value.replace(/\D/g, '');
     if (value.length > 5) {
