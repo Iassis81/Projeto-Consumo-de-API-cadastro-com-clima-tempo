@@ -1,63 +1,168 @@
-function limparCampos() {
-    document.getElementById('logradouro').value = "";
-    document.getElementById('bairro').value = "";
-    document.getElementById('cidade').value = "";
-    document.getElementById('uf').value = "";
-}
-function buscarEndereco() {
-    const cepInput = document.getElementById('cep');
-    // 1. Limpa o CEP: remove caracteres não numéricos.
-    const cep = cepInput.value.replace(/\D/g, '');
-    // URL da API ViaCEP
-    const url = `https://viacep.com.br/ws/${cep}/json/`;
-    limparCampos(); // Limpa antes de uma nova busca
-    // Validação básica do CEP (apenas 8 dígitos)
+// Função para buscar endereço pelo CEP
+async function buscarEndereco() {
+    const cep = document.getElementById('cep').value.replace(/\D/g, '');
+    
     if (cep.length !== 8) {
-        alert("CEP inválido! Digite 8 números.");
+        alert('CEP inválido!');
         return;
     }
-    // 2. Requisição com 'fetch' (Retorna uma Promise)
-    fetch(url)
-        .then(response => response.json()) // Primeira Promise: Converte a resposta para JSON
-        .then(dados => { // Segunda Promise: Manipula os dados recebidos
-            if (dados.erro) {
-                // CEP não encontrado (campo "erro" = true no JSON)
-                alert("CEP não encontrado na base de dados do ViaCEP.");
-            } else {
-                // 3. Preenche os campos do formulário
-                document.getElementById('logradouro').value = dados.logradouro;
-                document.getElementById('bairro').value = dados.bairro;
-                document.getElementById('cidade').value = dados.localidade; // localidade é a cidade
-                document.getElementById('uf').value = dados.uf;
-                document.getElementById('numero').focus(); // Foca no campo 'Número' para o usuário continuar
-            }
-        })
-        .catch(error => { // Trata erros de conexão ou do fetch
-            console.error('Erro na requisição da API:', error);
-            alert("Ocorreu um erro ao consultar o CEP. Tente novamente mais tarde.");
-        });
-}
-async function buscarClima() {
-    const cidade = document.getElementById('cidade').value;
-    const loadingElement = document.getElementById('loading');
-    loadingElement.style.display = 'block';
 
     try {
-        const resposta = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=5a5f074b4bd6d0523bdaf8c04f879ed2&lang=pt_BR`);
-        const dados = await resposta.json();
-
-        let temperatura = (dados.main.temp - 273.15).toFixed(2); // Converte para Celsius
-        let descricao = dados.weather[0].description;
-        let umidade = dados.main.humidity; // ✅ nova variável
-
-        document.getElementById('temperatura').textContent = `Temperatura: ${temperatura}°C`;
-        document.getElementById('descricao').textContent = `Descrição: ${descricao}`;
-        document.getElementById('umidade').textContent = `Umidade: ${umidade}%`; // ✅ nova linha adicionada aqui
-
-    } catch (erro) {
-        console.log('Erro:', erro);
-        alert('Erro ao buscar dados. Tente novamente.');
-    } finally {
-        loadingElement.style.display = 'none'; // Sempre esconde o loading
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = await response.json();
+        
+        if (data.erro) {
+            alert('CEP não encontrado!');
+            return;
+        }
+        
+        document.getElementById('logradouro').value = data.logradouro || '';
+        document.getElementById('bairro').value = data.bairro || '';
+        document.getElementById('cidade').value = data.localidade || '';
+        document.getElementById('uf').value = data.uf || '';
+        
+    } catch (error) {
+        console.error('Erro ao buscar endereço:', error);
+        alert('Erro ao buscar endereço!');
     }
 }
+
+// Função para buscar clima pela cidade (mantida para compatibilidade)
+async function buscarClima() {
+    const cidade = document.getElementById('cidadeClima').value;
+    if (!cidade) {
+        alert('Por favor, digite uma cidade!');
+        return;
+    }
+    await buscarClimaPorCidade(cidade);
+}
+
+// Nova função para buscar clima diretamente pelo CEP
+async function buscarClimaPorCEP() {
+    const cep = document.getElementById('cep').value.replace(/\D/g, '');
+    
+    if (cep.length !== 8) {
+        alert('Por favor, digite um CEP válido primeiro!');
+        return;
+    }
+
+    // Mostrar loading
+    document.getElementById('loading').style.display = 'block';
+    
+    try {
+        // Primeiro busca o endereço pelo CEP
+        const viaCepResponse = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const enderecoData = await viaCepResponse.json();
+        
+        if (enderecoData.erro) {
+            alert('CEP não encontrado!');
+            return;
+        }
+        
+        const cidade = enderecoData.localidade;
+        const uf = enderecoData.uf;
+        
+        // Agora busca o clima pela cidade
+        await buscarClimaPorCidade(cidade, uf);
+        
+    } catch (error) {
+        console.error('Erro ao buscar clima:', error);
+        alert('Erro ao buscar informações do clima!');
+    } finally {
+        // Esconder loading
+        document.getElementById('loading').style.display = 'none';
+    }
+}
+
+// Função para definir a cor da temperatura baseada no valor
+function definirCorTemperatura(temperatura, elemento) {
+    // Remover classes de cor anteriores
+    elemento.classList.remove('temp-fria', 'temp-moderada', 'temp-quente');
+    
+    // Aplicar a cor conforme a faixa de temperatura
+    if (temperatura < 15) {
+        elemento.classList.add('temp-fria'); // Azul
+    } else if (temperatura >= 15 && temperatura <= 30) {
+        elemento.classList.add('temp-moderada'); // Verde
+    } else {
+        elemento.classList.add('temp-quente'); // Vermelho
+    }
+}
+
+// Função auxiliar para buscar clima por cidade
+async function buscarClimaPorCidade(cidade, uf = '') {
+    try {
+        // Usando a API OpenWeatherMap (você precisa de uma chave API gratuita)
+        const apiKey = '5a5f074b4bd6d0523bdaf8c04f879ed2';
+        const response = await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?q=${cidade},BR&units=metric&lang=pt_br&appid=${apiKey}`
+        );
+        
+        if (!response.ok) {
+            throw new Error('Cidade não encontrada');
+        }
+        
+        const data = await response.json();
+        const temperatura = Math.round(data.main.temp);
+        const elementoClima = document.getElementById('temperatura');
+        
+        // Atualizar a interface com os dados do clima
+        elementoClima.textContent = `Temperatura: ${temperatura}°C`;
+        elementoClima.innerHTML = `Temperatura: <span class="temp-value">${temperatura}°C</span>`;
+        
+        // Aplicar a cor conforme a temperatura
+        definirCorTemperatura(temperatura, elementoClima);
+        
+        document.getElementById('descricao').textContent = `Condição: ${data.weather[0].description}`;
+        document.getElementById('umidade').textContent = `Umidade: ${data.main.humidity}%`;
+        
+    } catch (error) {
+        console.error('Erro ao buscar clima:', error);
+        alert('Erro ao buscar informações do clima!');
+    }
+}
+
+// Função alternativa usando uma API de clima brasileira (sem necessidade de chave)
+async function buscarClimaPorCidadeBrasil(cidade) {
+    try {
+        // API alternativa para cidades brasileiras (exemplo)
+        const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=-23.55&longitude=-46.63&current_weather=true`);
+        // Nota: Você precisaria geocodificar a cidade para obter latitude/longitude
+        
+        const data = await response.json();
+        const temperatura = data.current_weather.temperature;
+        const elementoClima = document.getElementById('temperatura');
+        
+        // Atualizar a interface
+        elementoClima.innerHTML = `Temperatura: <span class="temp-value">${temperatura}°C</span>`;
+        
+        // Aplicar a cor conforme a temperatura
+        definirCorTemperatura(temperatura, elementoClima);
+        
+        document.getElementById('descricao').textContent = `Condição: ${data.current_weather.weathercode}`;
+        
+    } catch (error) {
+        console.error('Erro ao buscar clima:', error);
+        alert('Erro ao buscar informações do clima!');
+    }
+}
+
+// Event Listeners
+document.getElementById('btnSalvar').addEventListener('click', function() {
+    // Sua lógica de salvamento aqui
+    alert('Dados salvos com sucesso!');
+});
+
+document.getElementById('btnLimpar').addEventListener('click', function() {
+    localStorage.clear();
+    alert('Local Storage limpo!');
+});
+
+// Formatação do CEP
+document.getElementById('cep').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length > 5) {
+        value = value.substring(0, 5) + '-' + value.substring(5, 8);
+    }
+    e.target.value = value;
+});

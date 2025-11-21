@@ -1,54 +1,153 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f7f8;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23e1e8e9" d="M50,10 C70,10 85,25 85,45 C85,65 70,80 50,80 C30,80 15,65 15,45 C15,25 30,10 50,10 Z M35,25 C30,30 25,35 25,45 C25,55 30,60 35,65 C40,70 45,70 50,70 C55,70 60,70 65,65 C70,60 75,55 75,45 C75,35 70,30 65,25 C60,20 55,20 50,20 C45,20 40,20 35,25 Z"/></svg>');
+    background-size: 200px;
+    background-position: center;
     padding: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Adicionando um overlay para melhor legibilidade */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(244, 247, 248, 0.85);
+    z-index: -1;
 }
 
 h1 {
     color: #2e7d32;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 form {
     background: white;
-    padding: 20px 30px;
+    padding: 25px 30px;
     border-radius: 10px;
-    box-shadow: 0 0 10px #ccc;
-    width: 300px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 320px;
+    position: relative;
+    z-index: 1;
 }
 
 label {
     display: block;
-    margin-top: 10px;
+    margin-top: 12px;
     font-weight: bold;
     color: #333;
 }
 
 input {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     margin-top: 5px;
     border: 1px solid #aaa;
     border-radius: 5px;
+    box-sizing: border-box;
+}
+
+input:focus {
+    border-color: #2e7d32;
+    outline: none;
+    box-shadow: 0 0 5px rgba(46, 125, 50, 0.3);
 }
 
 .botoes {
-    margin-top: 15px;
-    text-align: center;
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
-button {
+.botoes button {
+    width: 80%;
+    max-width: 200px;
     background-color: #2e7d32;
     color: white;
-    padding: 8px 15px;
+    padding: 10px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin: 5px;
+    font-weight: bold;
+    transition: all 0.3s ease;
 }
 
-button:hover {
+.botoes button:hover {
     background-color: #1b5e20;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo específico para o botão de buscar clima */
+button[onclick="buscarClimaPorCEP()"] {
+    width: 100%;
+    background-color: #1565c0;
+    margin-top: 15px;
+    padding: 10px;
+}
+
+button[onclick="buscarClimaPorCEP()"]:hover {
+    background-color: #0d47a1;
+}
+
+/* Estilo para os resultados do clima */
+#temperatura, #descricao, #umidade {
+    text-align: center;
+    margin: 8px 0;
+    padding: 8px;
+    background-color: #e8f5e9;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+#loading {
+    text-align: center;
+    font-style: italic;
+    color: #666;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    body {
+        padding: 15px;
+    }
+    
+    form {
+        width: 100%;
+        max-width: 320px;
+        padding: 20px;
+    }
+}
+/* Estilos para as cores de temperatura */
+#temperatura.temp-fria {
+    color: #2196F3; /* Azul para temperaturas frias */
+    font-weight: bold;
+}
+
+#temperatura.temp-moderada {
+    color: #4CAF50; /* Verde para temperaturas moderadas */
+    font-weight: bold;
+}
+
+#temperatura.temp-quente {
+    color: #F44336; /* Vermelho para temperaturas quentes */
+    font-weight: bold;
+}
+
+.temp-value {
+    font-size: 1.1em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.7);
 }
